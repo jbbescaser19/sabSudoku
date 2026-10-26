@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#9b7ae8" />
+    <meta
+      name="description"
+      content="A cute, relaxing purple-themed Sudoku game."
+    />
+    <title>Sabrina Panget Sudoku ♡</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true">✦</div>
+    <div class="ambient ambient-two" aria-hidden="true">♡</div>
+    <main class="app">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Kawaii Sudoku home">
+          <div class="brand-characters">
+            <!-- Add your licensed Pocoyo image here -->
+            <img
+              src="./images/pocoyo.png"
+              alt="Pocoyo sitting"
+              class="pocoyo-character"
+            />
+
+            <!-- Add your licensed Snoopy image here -->
+            <img
+              src="./images/snoopy.png"
+              alt="Snoopy hanging over the corner"
+              class="snoopy-character"
+            />
+          </div>
+
+          <span class="brand-text">
+            <strong>Sabrina Sudoku ♡</strong>
+            <small>Small puzzles, big smiles ♡</small>
+          </span>
+        </a>
+
+        <div class="top-actions">
+          <button
+            class="icon-btn"
+            id="settingsBtn"
+            aria-label="Open settings"
+            title="Settings"
+          >
+            ⚙
+          </button>
+
+          <button
+            class="icon-btn"
+            id="fullscreenBtn"
+            aria-label="Toggle fullscreen"
+            title="Fullscreen"
+          >
+            ⛶
+          </button>
+        </div>
+      </header>
+
+      <section class="game-info panel" aria-label="Game information">
+        <label class="difficulty-wrap"
+          >Difficulty
+          <select id="difficulty" aria-label="Puzzle difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+        <div class="stat">
+          <span class="stat-label">♡ Time</span
+          ><strong id="timer">00:00</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">✦ Mistakes</span
+          ><strong id="mistakes">0 / 3</strong>
+        </div>
+        <button class="pill-btn pause-btn" id="pauseBtn">Ⅱ Pause</button>
+      </section>
+
+      <section class="board-section">
+        <div class="section-heading">
+          <span>Let’s solve something lovely!</span
+          ><span class="tiny-heart">♥</span
+          ><span class="character-caption">🐾</span>
+        </div>
+        <div class="board-wrap">
+          <img
+            src="./images/snoopy-sitting.png"
+            alt="Snoopy sitting on the Sudoku corner"
+            class="snoopy-board-decoration"
+          />
+
+          <div
+            id="board"
+            class="sudoku-board"
+            role="grid"
+            aria-label="Sudoku board"
+          ></div>
+          <div id="pauseOverlay" class="board-overlay hidden">
+            <div class="overlay-card">
+              <span class="overlay-emoji">🌙</span>
+              <h2>Taking a little break?</h2>
+              <p>Your puzzle is safe. Come back when you're ready!</p>
+              <button class="primary-btn" id="resumeBtn">Resume game</button>
+            </div>
+          </div>
+          <div id="winOverlay" class="board-overlay hidden">
+            <div class="overlay-card">
+              <span class="overlay-emoji">🎉</span>
+              <h2>You did it!</h2>
+              <p id="winSummary">Puzzle complete!</p>
+              <button class="primary-btn" id="winNewBtn">
+                Play another puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="board-caption">
+          One number at a time, you’ve got this ✨
+        </div>
+      </section>
+
+      <section class="controls panel" aria-label="Game controls">
+        <div class="controls-title">
+          <span>🔢</span>
+          <h2>Choose a number</h2>
+        </div>
+        <div id="numberPad" class="number-pad" aria-label="Number pad"></div>
+        <div class="action-grid">
+          <button class="action-btn" id="eraseBtn">
+            <span>⌫</span><small>Erase</small>
+          </button>
+          <button class="action-btn" id="notesBtn" aria-pressed="false">
+            <span>✎</span><small>Notes <b id="notesState">Off</b></small>
+          </button>
+          <button class="action-btn" id="undoBtn">
+            <span>↶</span><small>Undo</small>
+          </button>
+          <button class="action-btn" id="redoBtn">
+            <span>↷</span><small>Redo</small>
+          </button>
+          <button class="action-btn" id="hintBtn">
+            <span>💡</span><small>Hint <b id="hintsLeft">3</b></small>
+          </button>
+          <button class="action-btn" id="checkBtn">
+            <span>✓</span><small>Check</small>
+          </button>
+        </div>
+        <div class="bottom-actions">
+          <button class="secondary-btn" id="newGameBtn">↻ New game</button>
+          <button class="secondary-btn" id="resetBtn">⟲ Restart</button>
+        </div>
+      </section>
+
+      <footer>Made with a little lavender magic <span>♥</span></footer>
+    </main>
+
+    <dialog id="settingsDialog" class="settings-dialog">
+      <form method="dialog" class="dialog-head">
+        <div>
+          <span class="dialog-kicker">MAKE IT YOURS</span>
+          <h2>Cozy settings</h2>
+        </div>
+        <button class="icon-btn close-btn" aria-label="Close settings">
+          ×
+        </button>
+      </form>
+      <div class="settings-content">
+        <label class="setting-row"
+          ><span
+            ><strong>Background image</strong
+            ><small>Choose a picture from your device</small></span
+          ><input id="backgroundUpload" type="file" accept="image/*"
+        /></label>
+        <button id="defaultBackgroundBtn" class="secondary-btn full-width">
+          ↺ Restore default background
+        </button>
+        <label class="setting-row"
+          ><span
+            ><strong>Show number counts</strong
+            ><small>Numbers remaining to place</small></span
+          ><input id="countsToggle" type="checkbox" checked
+        /></label>
+        <label class="setting-row"
+          ><span
+            ><strong>Highlight mistakes</strong
+            ><small>Mark duplicate numbers in pink</small></span
+          ><input id="conflictToggle" type="checkbox" checked
+        /></label>
+        <p class="storage-note">
+          Your puzzle and preferences are saved on this device when browser
+          storage allows.
+        </p>
+      </div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
