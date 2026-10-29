@@ -504,6 +504,101 @@
       showToast("This image is too large to save. Try a smaller image.");
     }
   }
+  // Local music playlist: files are played directly from the user's device.
+  const musicAudio = $("musicAudio");
+  const musicUpload = $("musicUpload");
+  const musicTrack = $("musicTrack");
+  const musicStatus = $("musicStatus");
+  const musicPlayBtn = $("musicPlayBtn");
+  const musicPrevBtn = $("musicPrevBtn");
+  const musicNextBtn = $("musicNextBtn");
+  const musicVolume = $("musicVolume");
+  let musicPlaylist = [];
+  let currentTrack = -1;
+
+  function updateMusicButtons() {
+    const hasTracks = musicPlaylist.length > 0;
+    musicTrack.disabled = !hasTracks;
+    musicPlayBtn.disabled = !hasTracks;
+    musicPrevBtn.disabled = !hasTracks;
+    musicNextBtn.disabled = !hasTracks;
+    musicPlayBtn.textContent = !musicAudio.paused ? "Ⅱ" : "▶";
+    musicPlayBtn.setAttribute("aria-label", !musicAudio.paused ? "Pause music" : "Play music");
+  }
+
+  function selectMusicTrack(index, autoplay = false) {
+    if (!musicPlaylist.length) return;
+    currentTrack = (index + musicPlaylist.length) % musicPlaylist.length;
+    musicTrack.value = String(currentTrack);
+    musicAudio.src = musicPlaylist[currentTrack].url;
+    musicAudio.load();
+    musicStatus.textContent = musicPlaylist[currentTrack].name;
+    updateMusicButtons();
+    if (autoplay) {
+      musicAudio.play().then(updateMusicButtons).catch(() => {
+        musicStatus.textContent = "Tap play to start your music ♡";
+        updateMusicButtons();
+      });
+    }
+  }
+
+  musicUpload.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files || []).filter((file) =>
+      file.type.startsWith("audio/") || /\.(mp3|wav|ogg|m4a|aac|flac|opus)$/i.test(file.name)
+    );
+    if (!files.length) {
+      showToast("Choose one or more audio files ♡");
+      event.target.value = "";
+      return;
+    }
+    musicPlaylist.forEach((track) => URL.revokeObjectURL(track.url));
+    musicPlaylist = files.map((file) => ({ name: file.name, url: URL.createObjectURL(file) }));
+    musicTrack.innerHTML = "";
+    musicPlaylist.forEach((track, index) => {
+      const option = document.createElement("option");
+      option.value = String(index);
+      option.textContent = track.name;
+      musicTrack.append(option);
+    });
+    musicAudio.pause();
+    selectMusicTrack(0, false);
+    musicStatus.textContent = `${musicPlaylist.length} song${musicPlaylist.length === 1 ? "" : "s"} ready to play ♡`;
+    updateMusicButtons();
+    showToast("Music added! Press play whenever you're ready 🎵");
+    event.target.value = "";
+  });
+
+  musicTrack.addEventListener("change", () => {
+    const wasPlaying = !musicAudio.paused;
+    selectMusicTrack(Number(musicTrack.value), wasPlaying);
+  });
+  musicPlayBtn.addEventListener("click", () => {
+    if (!musicPlaylist.length) return;
+    if (musicAudio.paused) {
+      if (!musicAudio.src) selectMusicTrack(Math.max(0, currentTrack), false);
+      musicAudio.play().then(updateMusicButtons).catch(() => {
+        musicStatus.textContent = "This audio file couldn't play. Try another file.";
+        updateMusicButtons();
+      });
+    } else {
+      musicAudio.pause();
+      updateMusicButtons();
+    }
+  });
+  musicPrevBtn.addEventListener("click", () => selectMusicTrack(currentTrack - 1, true));
+  musicNextBtn.addEventListener("click", () => selectMusicTrack(currentTrack + 1, true));
+  musicVolume.addEventListener("input", () => { musicAudio.volume = Number(musicVolume.value); });
+  musicAudio.volume = Number(musicVolume.value);
+  musicAudio.loop = true;
+  musicAudio.addEventListener("play", updateMusicButtons);
+  musicAudio.addEventListener("pause", updateMusicButtons);
+  musicAudio.addEventListener("ended", () => {
+    if (musicPlaylist.length > 1) selectMusicTrack(currentTrack + 1, true);
+  });
+  window.addEventListener("beforeunload", () => {
+    musicPlaylist.forEach((track) => URL.revokeObjectURL(track.url));
+  });
+
   $("eraseBtn").addEventListener("click", erase);
   $("undoBtn").addEventListener("click", undo);
   $("redoBtn").addEventListener("click", redo);

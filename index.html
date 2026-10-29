@@ -84,6 +84,79 @@
         <button class="pill-btn pause-btn" id="pauseBtn">Ⅱ Pause</button>
       </section>
 
+      <section class="music-player panel" aria-label="Music player">
+        <div class="music-heading">
+          <span class="music-icon" aria-hidden="true">♫</span>
+          <div>
+            <h2>Play your music</h2>
+            <p id="musicStatus" aria-live="polite">
+              Choose songs from your device ♡
+            </p>
+          </div>
+        </div>
+        <label class="music-upload" for="musicUpload">＋ Add music</label>
+        <input
+          id="musicUpload"
+          class="visually-hidden"
+          type="file"
+          accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac"
+          multiple
+        />
+        <label class="track-label" for="musicTrack">Your playlist</label>
+        <select
+          id="musicTrack"
+          class="music-track"
+          aria-label="Choose a song"
+          disabled
+        >
+          <option value="">No songs added yet</option>
+        </select>
+        <div class="music-controls">
+          <button
+            type="button"
+            class="music-btn"
+            id="musicPrevBtn"
+            aria-label="Previous song"
+            disabled
+          >
+            ⏮
+          </button>
+          <button
+            type="button"
+            class="music-btn music-play-btn"
+            id="musicPlayBtn"
+            aria-label="Play music"
+            disabled
+          >
+            ▶
+          </button>
+          <button
+            type="button"
+            class="music-btn"
+            id="musicNextBtn"
+            aria-label="Next song"
+            disabled
+          >
+            ⏭
+          </button>
+          <label class="volume-control" for="musicVolume"
+            ><span aria-hidden="true">🔊</span
+            ><input
+              id="musicVolume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value="0.6"
+              aria-label="Music volume"
+          /></label>
+        </div>
+        <audio id="musicAudio" preload="metadata"></audio>
+        <p class="music-note">
+          Music plays while you solve. Your selected files stay on this device.
+        </p>
+      </section>
+
       <section class="board-section">
         <div class="section-heading">
           <span>Let’s solve something lovely!</span
